@@ -8,10 +8,9 @@ Linux command line tools
 dependencies:
   tekartik_cmd_tools:
     git:
-      url: https://github.com/tekartikprj/io_tools.dart
+      url: https://github.com/tekartikprj/io_tools
       path: packages/cmd_tools
       ref: dart3a
-    version: '>=0.2.0'
 ```
 ## kill_cmd
 
