@@ -13,13 +13,12 @@ dependencies:
   args:
   path:
   pub_semver:
-dev_dependencies:
   tekartik_cmd_echo:
     git:
-      url: https://github.com/tekartik/app_io_utils.dart
-      path: packages/cmd_echo
+      url: https://github.com/tekartikprj/io_tools
       ref: dart3a
-    version: '>=0.2.0'
+      path: packages/cmd_echo
+dev_dependencies:
   test: '>=1.0.0'
   dev_test: any
 
