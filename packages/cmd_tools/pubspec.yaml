@@ -1,0 +1,28 @@
+name: tekartik_cmd_tools
+description: Linux command line tools
+version: 0.4.0
+homepage: https://github.com/tekartik/cmd_tools.dart
+
+publish_to: none
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  args: any
+  csv: any
+  glob: any
+  tekartik_io_utils:
+    git:
+      url: https://github.com/tekartik/io_utils.dart
+      ref: dart3a
+  tekartik_common_utils:
+    git:
+      url: https://github.com/tekartik/common_utils.dart
+      ref: dart3a
+  process_run: '>=0.10.2'
+
+dev_dependencies:
+  test: ">=1.0.0"
+  dev_build: '>=1.0.0'
+
