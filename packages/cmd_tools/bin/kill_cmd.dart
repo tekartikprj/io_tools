@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-library tekartik_script.bin.kill_cmd;
+library;
 
 import 'dart:async';
 
