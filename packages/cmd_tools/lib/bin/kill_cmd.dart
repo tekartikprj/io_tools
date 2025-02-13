@@ -24,7 +24,8 @@ Future main(List<String> args) async {
 
   void printUsage() {
     print(
-        '$scriptName <part_of_process_name> [<other_part_of_process_name> ...]');
+      '$scriptName <part_of_process_name> [<other_part_of_process_name> ...]',
+    );
     print(parser.usage);
   }
 

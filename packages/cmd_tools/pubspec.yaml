@@ -6,10 +6,10 @@ homepage: https://github.com/tekartik/cmd_tools.dart
 publish_to: none
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.7.0
 
 dependencies:
-  args: any
+  args: ">=2.6.0"
   csv: any
   glob: any
   tekartik_io_utils:
@@ -20,9 +20,9 @@ dependencies:
     git:
       url: https://github.com/tekartik/common_utils.dart
       ref: dart3a
-  process_run: '>=0.10.2'
+  process_run: ">=1.2.1+1"
 
 dev_dependencies:
-  test: ">=1.0.0"
-  dev_build: '>=1.0.0'
+  test: ">=1.24.0"
+  dev_build: ">=1.1.0+2"
 

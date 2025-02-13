@@ -46,22 +46,33 @@ Future main(List<String> arguments) async {
   parser.addFlag('help', abbr: 'h', help: 'Usage help', negatable: false);
   parser.addFlag('verbose', abbr: 'v', help: 'Verbose', negatable: false);
   parser.addFlag(_flagNoStderr, abbr: 'n', help: 'No stderr', negatable: false);
-  parser.addFlag(_flagRunInShell,
-      abbr: 's', help: 'RunInShell', negatable: false);
+  parser.addFlag(
+    _flagRunInShell,
+    abbr: 's',
+    help: 'RunInShell',
+    negatable: false,
+  );
   parser.addFlag(_flagJson, abbr: 'j', help: 'Save as json', negatable: false);
-  parser.addFlag(_flagStdin,
-      abbr: 'i',
-      help: 'stdin read, need CTRL-C to terminate',
-      defaultsTo: false,
-      negatable: true);
-  parser.addFlag(_flagOwnStdin,
-      abbr: 'w',
-      help: 'handle stdin and forward command',
-      defaultsTo: false,
-      negatable: true);
+  parser.addFlag(
+    _flagStdin,
+    abbr: 'i',
+    help: 'stdin read, need CTRL-C to terminate',
+    defaultsTo: false,
+    negatable: true,
+  );
+  parser.addFlag(
+    _flagOwnStdin,
+    abbr: 'w',
+    help: 'handle stdin and forward command',
+    defaultsTo: false,
+    negatable: true,
+  );
   parser.addOption('exit-code', abbr: 'x', help: 'Exit code to return');
-  parser.addFlag('version',
-      help: 'Print the command version', negatable: false);
+  parser.addFlag(
+    'version',
+    help: 'Print the command version',
+    negatable: false,
+  );
 
   final argResults = parser.parse(arguments);
 
@@ -120,21 +131,23 @@ Future main(List<String> arguments) async {
   if (ownStdin!) {
     inStreamController = StreamController<List<int>>(sync: true);
     inStream = inStreamController.stream;
-    stdin
-        .transform(utf8.decoder)
-        .transform(const LineSplitter())
-        .listen((String line) {
+    stdin.transform(utf8.decoder).transform(const LineSplitter()).listen((
+      String line,
+    ) {
       inStreamController.add(utf8.encode('$line\n'));
     });
   }
 
-  await record(cmdExecutable, cmdArguments,
-      runInShell: runInShell,
-      recordStdin: recordStdin,
-      history: history,
-      dumpSink: ioSink,
-      noStderr: noStdErr,
-      inStream: inStream);
+  await record(
+    cmdExecutable,
+    cmdArguments,
+    runInShell: runInShell,
+    recordStdin: recordStdin,
+    history: history,
+    dumpSink: ioSink,
+    noStderr: noStdErr,
+    inStream: inStream,
+  );
 
   if (ownStdin) {
     await inStreamController.close();

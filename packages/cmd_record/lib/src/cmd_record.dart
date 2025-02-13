@@ -112,10 +112,12 @@ class HistorySink implements StreamSink<List<int>> {
         .transform(utf8.decoder)
         .transform(const LineSplitter())
         .listen((String line) {
-      itemController.add(HistoryItem()
-        ..time = stopwatch.elapsedMicroseconds
-        ..line = line);
-    });
+          itemController.add(
+            HistoryItem()
+              ..time = stopwatch.elapsedMicroseconds
+              ..line = line,
+          );
+        });
   }
 
   @override
@@ -153,16 +155,19 @@ class HistorySink implements StreamSink<List<int>> {
 /// write rest arguments as lines
 /// if history is not null
 ///
-Future record(String executable, List<String> arguments,
-    {bool? runInShell,
-    bool? recordStdin,
+Future record(
+  String executable,
+  List<String> arguments, {
+  bool? runInShell,
+  bool? recordStdin,
 
-    /// prevent streaming to stderr and stdout in real time
-    bool? noStdOutput,
-    StringSink? dumpSink,
-    History? history,
-    Stream<List<int>>? inStream,
-    bool? noStderr}) async {
+  /// prevent streaming to stderr and stdout in real time
+  bool? noStdOutput,
+  StringSink? dumpSink,
+  History? history,
+  Stream<List<int>>? inStream,
+  bool? noStderr,
+}) async {
   noStdOutput ??= false;
   noStderr ??= false;
 
@@ -196,9 +201,9 @@ Future record(String executable, List<String> arguments,
 
   if (recordStdin) {
     stdinStream.listen((List<int> data) {
-      stdinController.add(data);
-      stdinRecordController.add(data);
-    })
+        stdinController.add(data);
+        stdinRecordController.add(data);
+      })
       ..onError((Object e, StackTrace st) {
         stdinController.addError(e, st);
         stdinRecordController.addError(e, st);
@@ -212,13 +217,14 @@ Future record(String executable, List<String> arguments,
         .transform(utf8.decoder)
         .transform(const LineSplitter())
         .listen((String line) {
-      var item = HistoryItem()
-        ..time = stopwatch.elapsedMicroseconds
-        ..line = line;
-      // Output
-      dumpSink?.writeln(item.getOutput(inPrefix));
-      history?.inItems.add(item);
-    });
+          var item =
+              HistoryItem()
+                ..time = stopwatch.elapsedMicroseconds
+                ..line = line;
+          // Output
+          dumpSink?.writeln(item.getOutput(inPrefix));
+          history?.inItems.add(item);
+        });
   }
 
   history?.date = DateTime.now();
@@ -226,10 +232,12 @@ Future record(String executable, List<String> arguments,
   history?.arguments = arguments;
 
   stopwatch.start();
-  final result = await runCmd(cmd,
-      stdout: outSink,
-      stderr: errSink,
-      stdin: recordStdin ? stdinController.stream : null);
+  final result = await runCmd(
+    cmd,
+    stdout: outSink,
+    stderr: errSink,
+    stdin: recordStdin ? stdinController.stream : null,
+  );
 
   await outSink.close();
   await errSink?.close();
@@ -264,7 +272,8 @@ void dump(History history) {
   var parsers = [inParser];
   stdout.writeln('date ${history.date}\nduration ${history.duration}');
   stdout.writeln(
-      '\$ ${executableArgumentsToString(history.executable!, history.arguments)}\n');
+    '\$ ${executableArgumentsToString(history.executable!, history.arguments)}\n',
+  );
 
   var done = false;
   while (!done) {

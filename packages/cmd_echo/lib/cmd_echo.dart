@@ -30,19 +30,42 @@ Future main(List<String> arguments) async {
   final parser = ArgParser(allowTrailingOptions: false);
   parser.addFlag('help', abbr: 'h', help: 'Usage help', negatable: false);
   parser.addFlag('verbose', abbr: 'v', help: 'Verbose', negatable: false);
-  parser.addOption('stdout',
-      abbr: 'o', help: 'stdout content as string', defaultsTo: null);
-  parser.addOption('stdout-hex',
-      abbr: 'p', help: 'stdout as hexa string', defaultsTo: null);
-  parser.addOption('stderr',
-      abbr: 'e', help: 'stderr content as string', defaultsTo: null);
-  parser.addOption('stderr-hex',
-      abbr: 'f', help: 'stderr as hexa string', defaultsTo: null);
-  parser.addFlag('stdin',
-      abbr: 'i', help: 'Handle first line of stdin', negatable: false);
+  parser.addOption(
+    'stdout',
+    abbr: 'o',
+    help: 'stdout content as string',
+    defaultsTo: null,
+  );
+  parser.addOption(
+    'stdout-hex',
+    abbr: 'p',
+    help: 'stdout as hexa string',
+    defaultsTo: null,
+  );
+  parser.addOption(
+    'stderr',
+    abbr: 'e',
+    help: 'stderr content as string',
+    defaultsTo: null,
+  );
+  parser.addOption(
+    'stderr-hex',
+    abbr: 'f',
+    help: 'stderr as hexa string',
+    defaultsTo: null,
+  );
+  parser.addFlag(
+    'stdin',
+    abbr: 'i',
+    help: 'Handle first line of stdin',
+    negatable: false,
+  );
   parser.addOption('exit-code', abbr: 'x', help: 'Exit code to return');
-  parser.addFlag('version',
-      help: 'Print the command version', negatable: false);
+  parser.addFlag(
+    'version',
+    help: 'Print the command version',
+    negatable: false,
+  );
 
   final argResults = parser.parse(arguments);
 

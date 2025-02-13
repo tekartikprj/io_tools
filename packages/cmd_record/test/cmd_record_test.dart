@@ -22,8 +22,12 @@ void main() {
     test('out', () async {
       final history = History();
       ProcessCmd cmd = DartCmd([echoScriptPath, '--stdout', 'out']);
-      await record(cmd.executable, cmd.arguments,
-          noStdOutput: true, history: history);
+      await record(
+        cmd.executable,
+        cmd.arguments,
+        noStdOutput: true,
+        history: history,
+      );
       //devPrint(JSON.encode(history));
       expect(history.outItems.first.line, 'out');
     });
@@ -31,8 +35,12 @@ void main() {
     test('err', () async {
       final history = History();
       ProcessCmd cmd = DartCmd([echoScriptPath, '--stderr', 'err']);
-      await record(cmd.executable, cmd.arguments,
-          noStdOutput: true, history: history);
+      await record(
+        cmd.executable,
+        cmd.arguments,
+        noStdOutput: true,
+        history: history,
+      );
       //devPrint(JSON.encode(history));
       expect(history.errItems.first.line, 'err');
     }, onPlatform: {'windows': const Skip('failing')});
@@ -41,8 +49,13 @@ void main() {
       final history = History();
       ProcessCmd cmd = DartCmd([echoScriptPath, '--stdin']);
       var inController = StreamController<List<int>>();
-      final future = record(cmd.executable, cmd.arguments,
-          noStdOutput: true, inStream: inController.stream, history: history);
+      final future = record(
+        cmd.executable,
+        cmd.arguments,
+        noStdOutput: true,
+        inStream: inController.stream,
+        history: history,
+      );
       inController.add(utf8.encode('in'));
       await inController.close();
       await future;

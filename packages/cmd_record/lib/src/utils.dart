@@ -10,12 +10,14 @@ String durationToString(Duration duration) {
     return '0$n';
   }
 
-  final twoDigitMinutes =
-      twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour).toInt());
+  final twoDigitMinutes = twoDigits(
+    duration.inMinutes.remainder(Duration.minutesPerHour).toInt(),
+  );
   final twoDigitSeconds = twoDigits(
-      duration.inSeconds.remainder(Duration.secondsPerMinute).toInt());
-  final threeDigitMillis = threeDigits(duration.inMilliseconds
-      .remainder(Duration.millisecondsPerSecond)
-      .toInt());
+    duration.inSeconds.remainder(Duration.secondsPerMinute).toInt(),
+  );
+  final threeDigitMillis = threeDigits(
+    duration.inMilliseconds.remainder(Duration.millisecondsPerSecond).toInt(),
+  );
   return '$twoDigitMinutes:$twoDigitSeconds.$threeDigitMillis';
 }

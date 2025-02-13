@@ -77,7 +77,7 @@ class PsLine extends _PsLineBase {
   }
 
   String? get cmd => _getColumn('CMD'); //_getColumn('NAME');
-// shell     7398  1310  1217116 16816 binder_thr a9529424 S com.android.commands.monkey
+  // shell     7398  1310  1217116 16816 binder_thr a9529424 S com.android.commands.monkey
 }
 
 var spaceSplitRegExp = RegExp('\\s+');
