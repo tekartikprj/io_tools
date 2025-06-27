@@ -217,10 +217,9 @@ Future record(
         .transform(utf8.decoder)
         .transform(const LineSplitter())
         .listen((String line) {
-          var item =
-              HistoryItem()
-                ..time = stopwatch.elapsedMicroseconds
-                ..line = line;
+          var item = HistoryItem()
+            ..time = stopwatch.elapsedMicroseconds
+            ..line = line;
           // Output
           dumpSink?.writeln(item.getOutput(inPrefix));
           history?.inItems.add(item);
