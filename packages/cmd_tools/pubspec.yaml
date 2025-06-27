@@ -6,7 +6,7 @@ homepage: https://github.com/tekartik/cmd_tools.dart
 publish_to: none
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.8.0
 
 dependencies:
   args: ">=2.6.0"
@@ -24,5 +24,5 @@ dependencies:
 
 dev_dependencies:
   test: ">=1.24.0"
-  dev_build: ">=1.1.0+2"
+  dev_build: ">=1.1.2"
 
