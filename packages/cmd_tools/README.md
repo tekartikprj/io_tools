@@ -10,7 +10,6 @@ dependencies:
     git:
       url: https://github.com/tekartikprj/io_tools
       path: packages/cmd_tools
-      ref: dart3a
 ```
 ## kill_cmd
 

@@ -10,7 +10,6 @@ dependencies:
     git:
       url: https://github.com/tekartikprj/io_tools
       path: packages/cmd_record
-      ref: dart3a
 ```
 
 ## Usage
