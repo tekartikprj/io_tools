@@ -11,7 +11,6 @@ dependencies:
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart3a
     version: '>=0.9.7'
   args: ">=2.6.0"
   pub_semver: ">=2.1.4"
@@ -20,3 +19,4 @@ dependencies:
 
 dev_dependencies:
   test: ">=1.24.0"
+resolution: workspace

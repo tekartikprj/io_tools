@@ -16,18 +16,15 @@ dependencies:
   tekartik_cmd_echo:
     git:
       url: https://github.com/tekartikprj/io_tools
-      ref: dart3a
       path: packages/cmd_echo
 dev_dependencies:
   test: ">=1.24.0"
   dev_test: ">=1.0.0+4"
 
-dependency_overrides:
-  tekartik_cmd_echo:
-    path: ../cmd_echo
 #  process_run:
 #    git: https://github.com/tekartik/process_run.dart
 #    version: ">=0.5.4"
 #    path: ../process_run.dart
 executables:
   cmd_record:
+resolution: workspace
