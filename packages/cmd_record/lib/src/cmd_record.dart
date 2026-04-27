@@ -9,8 +9,10 @@ import 'package:process_run/cmd_run.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:tekartik_cmd_record/src/utils.dart';
 
+/// The current version.
 Version version = Version(0, 1, 0);
 
+/// The name of the current script.
 String get currentScriptName => basenameWithoutExtension(Platform.script.path);
 
 /*
@@ -30,25 +32,48 @@ Global options:
     --version       Print the command version
 */
 
+/// Flag name for running in shell.
 const String flagRunInShell = 'run-in-shell';
+
+/// Flag name for stdin.
 const String flagStdin = 'stdin';
 
+/// Prefix for stdin lines in output.
 const String inPrefix = r'$';
+
+/// Prefix for stdout lines in output.
 const String outPrefix = r'>';
+
+/// Prefix for stderr lines in output.
 const String errPrefix = r'E';
 
+/// Records a command's I/O history.
 class History {
+  /// Recorded stdin items.
   final List<HistoryItem> inItems = [];
+
+  /// Recorded stdout items.
   final List<HistoryItem> outItems = [];
+
+  /// Recorded stderr items.
   final List<HistoryItem> errItems = [];
+
+  /// The executable that was run.
   String? executable;
+
+  /// The arguments passed to the executable.
   List<String>? arguments;
+
+  /// When the command was started.
   late DateTime date;
 
+  /// The process result.
   late ProcessResult result;
 
+  /// The total duration of the command.
   Duration? duration;
 
+  /// Serializes this history to a JSON-compatible map.
   Map<String, dynamic> toJson() {
     final record = <String, dynamic>{};
     record['date'] = date.toIso8601String();
@@ -71,29 +96,39 @@ class History {
   }
 }
 
+/// A single recorded I/O event.
 class HistoryItem {
+  /// Elapsed microseconds when this item was recorded.
   int? time;
+
+  /// The line content.
   String? line;
 
+  /// Serializes to [time, line].
   List<dynamic> toJson() => [time, line];
 
+  /// Returns a formatted output string with the given [prefix].
   String getOutput(String prefix) {
     return '${durationToString(Duration(microseconds: time!))} $prefix $line';
   }
 }
 
+/// A [StreamSink] that records items into [HistoryItem]s.
 class HistorySink implements StreamSink<List<int>> {
+  /// The underlying sink to also write data to, or null.
   final StreamSink? ioSink;
 
+  /// A stream of recorded [HistoryItem]s.
   Stream<HistoryItem> get stream => itemController.stream;
 
+  /// Controller for raw byte chunks.
   StreamController<List<int>> lineController = StreamController(sync: true);
+
+  /// Controller for decoded history items.
   StreamController<HistoryItem> itemController = StreamController(sync: true);
 
+  /// Stopwatch used to timestamp items.
   final Stopwatch stopwatch;
-
-  /// The results corresponding to events that have been added to the sink.
-  // final results = <HistoryItem>[];
 
   /// Whether [close] has been called.
   bool get isClosed => _isClosed;
@@ -266,6 +301,7 @@ class _Parser {
   }
 }
 
+/// Dumps [history] to stdout in a human-readable format.
 void dump(History history) {
   final inParser = _Parser(r'$', history.inItems);
   var parsers = [inParser];
@@ -289,7 +325,7 @@ void dump(History history) {
     }
 
     if (minParser != null) {
-      print(minParser.current!.getOutput(inParser.prefix));
+      stdout.writeln(minParser.current!.getOutput(inParser.prefix));
 
       /*
     }

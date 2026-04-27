@@ -8,7 +8,10 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:tekartik_cmd_tools/kill_cmd.dart';
 
+/// Flag name for the help option.
 const String flagHelp = 'help';
+
+/// Script name for usage messages.
 const String scriptName = 'kill_cmd';
 
 Future main(List<String> args) async {
@@ -23,10 +26,10 @@ Future main(List<String> args) async {
   final help = results[flagHelp] as bool;
 
   void printUsage() {
-    print(
+    stdout.writeln(
       '$scriptName <part_of_process_name> [<other_part_of_process_name> ...]',
     );
-    print(parser.usage);
+    stdout.writeln(parser.usage);
   }
 
   if (help) {

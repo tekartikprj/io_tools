@@ -1,9 +1,10 @@
 // windows only
 import 'dart:async';
 
-import 'package:tekartik_app_csv/app_csv.dart';
 import 'package:process_run/cmd_run.dart';
+import 'package:tekartik_app_csv/app_csv.dart';
 
+/// Returns a list of process IDs matching [command] (Windows only).
 Future<List<String>> getProcessIds(String command) async {
   // tasklist /FO CSV
   var cmd = ProcessCmd('tasklist', ['/FO', 'CSV']);
@@ -28,6 +29,7 @@ Future<List<String>> getProcessIds(String command) async {
   return pids;
 }
 
+/// Kills the process with the given [pid] (Windows only).
 Future killProcess(String pid) async {
   // taskkill /F /PID pid_number.
   var cmd = ProcessCmd('taskkill', ['/F', '/PID', pid]);

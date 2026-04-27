@@ -6,7 +6,7 @@ homepage: https://github.com/tekartik/cmd_record.dart
 publish_to: none
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.11.0
 
 dependencies:
   process_run: ">=1.2.4"

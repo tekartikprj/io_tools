@@ -5,8 +5,10 @@ import 'package:path/path.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 
+/// The current version.
 Version version = Version(0, 1, 0);
 
+/// The name of the current script.
 String get currentScriptName => basenameWithoutExtension(Platform.script.path);
 
 /*

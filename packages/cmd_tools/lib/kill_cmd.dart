@@ -4,11 +4,13 @@ import 'package:process_run/cmd_run.dart';
 import 'package:tekartik_cmd_tools/src/process_win.dart';
 import 'package:tekartik_cmd_tools/src/ps.dart';
 
+/// Kills all processes whose name matches [name].
 Future killCommand(String name) async {
   return await killAllCommandsByName(name);
 }
 
 // dart.exe,
+/// Kills all processes matching [name] and returns the count killed.
 Future<int> killAllCommandsByName(String name) async {
   if (Platform.isWindows) {
     var pids = await getProcessIds(name);
@@ -23,7 +25,7 @@ Future<int> killAllCommandsByName(String name) async {
     final psParser = PsParser(processResult.stdout.toString());
     final lines = psParser.findByCmd(name);
     for (final line in lines) {
-      print(line);
+      stdout.writeln(line);
       final cmd = ProcessCmd('kill', ['-9', '${line.pid}']);
       await runCmd(cmd, verbose: true);
     }

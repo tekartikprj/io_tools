@@ -1,3 +1,4 @@
+/// Formats [duration] as `mm:ss.mmm`.
 String durationToString(Duration duration) {
   String threeDigits(int n) {
     if (n >= 100) return '$n';
