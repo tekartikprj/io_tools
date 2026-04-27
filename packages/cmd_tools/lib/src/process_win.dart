@@ -1,7 +1,7 @@
 // windows only
 import 'dart:async';
 
-import 'package:csv/csv.dart';
+import 'package:tekartik_app_csv/app_csv.dart';
 import 'package:process_run/cmd_run.dart';
 
 Future<List<String>> getProcessIds(String command) async {
@@ -10,7 +10,7 @@ Future<List<String>> getProcessIds(String command) async {
   var pids = <String>[];
   var result = await runCmd(cmd);
   var csv = result.stdout.toString();
-  final rows = const CsvToListConverter().convert(csv);
+  final rows = CsvToListConverter().convert(csv);
   // [Image Name, PID, Session Name, Session#, Mem Usage]
   var columns = rows.first;
   var commandNameIndex = columns.indexOf('Image Name');
