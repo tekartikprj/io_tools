@@ -1,3 +1,6 @@
+/// Command process management and termination utilities.
+library;
+
 import 'dart:async';
 import 'dart:io';
 import 'package:process_run/cmd_run.dart';

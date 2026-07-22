@@ -138,10 +138,7 @@ class HistorySink implements StreamSink<List<int>> {
   Future get done => _doneCompleter.future;
   final _doneCompleter = Completer<dynamic>();
 
-  /// Creates a new sink.
-  ///
-  /// If [onDone] is passed, it's called when the user calls [close]. Its result
-  /// is piped to the [done] future.
+  /// Creates a new [HistorySink] wrapping optional [ioSink] and using [stopwatch] for timestamps.
   HistorySink(this.ioSink, this.stopwatch) {
     lineController.stream
         .transform(utf8.decoder)

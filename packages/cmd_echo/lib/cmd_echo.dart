@@ -1,3 +1,6 @@
+/// Command-line echo utility for standard output, error, and stdin handling.
+library;
+
 import 'dart:io';
 
 import 'package:args/args.dart';
@@ -23,9 +26,7 @@ Global options:
     --version       Print the command version
 */
 
-///
-/// write rest arguments as lines
-///
+/// Entry point for command echo utility, parsing command line [arguments] and outputting text.
 Future main(List<String> arguments) async {
   //setupQuickLogging();
 
