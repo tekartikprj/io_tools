@@ -182,5 +182,17 @@ void main() {
         'crash',
       ]);
     });
+
+    test('version', () async {
+      void check(ProcessResult result) {
+        var lines = result.stdout.toString().trim().split('\n');
+        expect(lines, hasLength(2));
+        expect(lines[0], endsWith('version 0.1.0'));
+        expect(lines[1], startsWith('VM: '));
+        expect(result.exitCode, 0);
+      }
+
+      await runCheck(check, dartExecutable!, [echoScriptPath, '--version']);
+    });
   });
 }

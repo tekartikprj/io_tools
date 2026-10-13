@@ -22,11 +22,16 @@ Future<int> killAllCommandsByName(String name) async {
     }
     return pids.length;
   } else {
-    final cmd = ProcessCmd('ps', ['x', '-o', 'pid,cmd']);
+    final cmd = ProcessCmd('ps', ['x', '-o', 'pid,ppid,cmd']);
 
     final processResult = await runCmd(cmd, commandVerbose: true);
     final psParser = PsParser(processResult.stdout.toString());
-    final lines = psParser.findByCmd(name);
+    // The name might be in our own command line (or its parents)
+    final selfPids = psParser.selfAndParentPids(pid);
+    final lines = psParser
+        .findByCmd(name)
+        .where((line) => !selfPids.contains(line.pid))
+        .toList();
     for (final line in lines) {
       stdout.writeln(line);
       final cmd = ProcessCmd('kill', ['-9', '${line.pid}']);

@@ -300,15 +300,22 @@ class _Parser {
 
 /// Dumps [history] to stdout in a human-readable format.
 void dump(History history) {
-  final inParser = _Parser(r'$', history.inItems);
-  var parsers = [inParser];
   stdout.writeln('date ${history.date}\nduration ${history.duration}');
   stdout.writeln(
     '\$ ${executableArgumentsToString(history.executable!, history.arguments)}\n',
   );
+  historyDumpLines(history).forEach(stdout.writeln);
+}
 
-  var done = false;
-  while (!done) {
+/// The in, out and err items of [history] by time, each with its prefix.
+List<String> historyDumpLines(History history) {
+  var parsers = [
+    _Parser(inPrefix, history.inItems),
+    _Parser(outPrefix, history.outItems),
+    _Parser(errPrefix, history.errItems),
+  ];
+  var lines = <String>[];
+  while (true) {
     _Parser? minParser;
     int? minTime;
     for (final parser in parsers) {
@@ -320,19 +327,10 @@ void dump(History history) {
         }
       }
     }
-
-    if (minParser != null) {
-      stdout.writeln(minParser.current!.getOutput(inParser.prefix));
-
-      /*
+    if (minParser == null) {
+      return lines;
     }
-      for (_Parser parser in parsers) {
-        if (identical(parser, minParser)) {
-      }
-      */
-      minParser.next();
-    } else {
-      done = true;
-    }
+    lines.add(minParser.current!.getOutput(minParser.prefix));
+    minParser.next();
   }
 }

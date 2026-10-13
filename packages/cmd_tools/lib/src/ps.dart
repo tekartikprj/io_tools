@@ -55,6 +55,24 @@ class PsParser {
     }
     return psLines;
   }
+
+  /// [pid] and the pids of its parents found in the ps output (needs a PPID
+  /// column), i.e. the processes running the current command.
+  Set<int> selfAndParentPids(int pid) {
+    var pids = <int>{};
+    int? current = pid;
+    while (current != null && pids.add(current)) {
+      int? parent;
+      for (final line in lines) {
+        if (int.tryParse(line._getColumn('PID') ?? '') == current) {
+          parent = line.ppid;
+          break;
+        }
+      }
+      current = parent;
+    }
+    return pids;
+  }
 }
 
 // USER      PID   PPID  VSIZE  RSS   WCHAN            PC  NAME
@@ -87,14 +105,27 @@ class PsLine extends _PsLineBase {
 
   String? _getColumn(String name) {
     var index = _header.findPartIndex(name);
-    if (index >= 0) {
+    if (index >= 0 && index < _parts.length) {
       return _parts[index];
     }
     return null;
   }
 
-  /// The command name.
-  String? get cmd => _getColumn('CMD'); //_getColumn('NAME');
+  /// The parent process ID, null if there is no PPID column.
+  int? get ppid => int.tryParse(_getColumn('PPID') ?? '');
+
+  /// The command line (the command and its arguments when CMD is the last
+  /// column).
+  String? get cmd {
+    var index = _header.findPartIndex('CMD');
+    if (index >= 0 && index == _header._parts.length - 1) {
+      if (index < _parts.length) {
+        return _parts.sublist(index).join(' ');
+      }
+      return null;
+    }
+    return _getColumn('CMD');
+  }
   // shell     7398  1310  1217116 16816 binder_thr a9529424 S com.android.commands.monkey
 }
 

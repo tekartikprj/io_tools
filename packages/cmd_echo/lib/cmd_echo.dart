@@ -95,7 +95,7 @@ Future main(List<String> arguments) async {
   var displayVersion = argResults['version'] as bool;
 
   if (displayVersion) {
-    stdout.write('$currentScriptName version $version');
+    stdout.writeln('$currentScriptName version $version');
     stdout.writeln('VM: ${Platform.resolvedExecutable} ${Platform.version}');
     return;
   }

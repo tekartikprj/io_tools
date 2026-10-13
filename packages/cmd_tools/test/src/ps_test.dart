@@ -22,6 +22,27 @@ void main() {
       expect(parser.header!.findPartIndex('CMD'), 1);
       expect(parser.findFirstByCmd('thunder')!.pid, 958);
       expect(parser.findByCmd('chrome').length, 2);
+      // The arguments are part of the command line
+      expect(parser.findByCmd('-avd 10.1_WXGA').single.pid, 9092);
+      expect(
+        parser.findFirstByCmd('thunder')!.cmd,
+        '/usr/lib/thunderbird/thunderbird',
+      );
+    });
+    test('ps_parser ppid', () {
+      final out = '''
+    PID    PPID CMD
+      1       0 /sbin/init
+    100       1 bash
+    200     100 dart bin/kill_cmd.dart x.dart
+    300       1 dart x.dart --arg
+''';
+      final parser = PsParser(out);
+      expect(parser.lines[2].ppid, 100);
+      expect(parser.lines[2].cmd, 'dart bin/kill_cmd.dart x.dart');
+      expect(parser.findByCmd('x.dart').map((line) => line.pid), [200, 300]);
+      expect(parser.selfAndParentPids(200), {200, 100, 1, 0});
+      expect(parser.selfAndParentPids(300), {300, 1, 0});
     });
   });
 }
