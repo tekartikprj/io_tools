@@ -19,7 +19,7 @@ library.
 
 ## Guidelines
 
-* Dependency (git, private project repo, not on pub.dev); it is a test fixture,
+* Dependency (git, public repo, not on pub.dev); it is a test fixture,
   so it belongs in `dev_dependencies`:
   ```yaml
   dev_dependencies:
@@ -67,8 +67,9 @@ library.
   (uncaught, so exit code 255 too).
 * Use the `--option=value` form when the value itself starts with `-`
   (`--stdout=-x`), and put every option before the positional arguments.
-* Testing style used by this package: spawn the script with both
-  `Process.run` and `process_run`'s `runExecutableArguments`, then assert on
+* Testing style: spawn the script with `process_run`'s
+  `runExecutableArguments` (or a `Shell`, never `dart:io` `Process.run` /
+  `Process.start` in new code), then assert on
   `result.stdout`, `result.stderr` and `result.exitCode`; pass
   `stdoutEncoding: null` / `stderrEncoding: null` for the `*-hex` options. Such
   tests are VM only: start the file with `@TestOn('vm')`.

@@ -1,7 +1,7 @@
 name: tekartik_cmd_echo
 description: A echo command-line application.
 version: 0.2.1+1
-homepage: https://github.com/tekartik/cmd_echo.dart
+homepage: https://github.com/tekartikprj/io_tools
 
 publish_to: none
 environment:
