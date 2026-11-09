@@ -14,7 +14,13 @@ Future killCommand(String name) async {
 
 // dart.exe,
 /// Kills all processes matching [name] and returns the count killed.
+///
+/// Throws an [ArgumentError] when [name] is empty or blank: it would match
+/// every process.
 Future<int> killAllCommandsByName(String name) async {
+  if (name.trim().isEmpty) {
+    throw ArgumentError.value(name, 'name', 'An empty name matches everything');
+  }
   if (Platform.isWindows) {
     var pids = await getProcessIds(name);
     for (var pid in pids) {

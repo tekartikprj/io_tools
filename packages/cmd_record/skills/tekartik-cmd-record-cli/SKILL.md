@@ -69,18 +69,19 @@ cat cmd_record.log
   `{date, duration, executable, arguments, in, out, err, exitCode}` where
   `in`/`out`/`err` are `[[microseconds, line], ...]` and absent when empty.
   `-v` additionally prints a header (date, duration, command line) followed
-  by the stdin lines only: the `dump` function does not print stdout and
-  stderr items.
+  by every recorded line in time order (`$` stdin, `>` stdout, `E` stderr).
 * Exit code: `cmd_record` exits `0` whatever the command returned; the
   command's exit code is only in the json `exitCode`. `-x`/`--exit-code` is
   accepted and ignored. Without a command: `Need a command` and exit `1`.
 * `-i`/`--stdin`: the stdin of `cmd_record` is forwarded to the command and
   recorded as `$` lines. A pipe ends it at EOF (`printf 'a\n' | cmd_record -i
-  cat`); on a terminal the command only sees EOF at CTRL-C.
-* `-w`/`--own-stdin`: stdin is read line by line and each line is forwarded
-  with a newline, but the forwarded stream is only closed after the command
-  exits: a command that waits for EOF (`cat`) never ends. Use `-i` for those,
-  `-w` only for commands that stop by themselves.
+  cat`); on a terminal the command only sees EOF at CTRL-C. A command that
+  exits before reading its whole input can crash `cmd_record` with an
+  unhandled `SocketException` (broken pipe, raised in process_run).
+* `-w`/`--own-stdin`: stdin is read line by line, each line is forwarded
+  with a newline and recorded (as `-i`), and the command sees the end of its
+  input when the stdin of `cmd_record` ends (`printf 'a\n' | cmd_record -w
+  cat`).
 * `-n`/`--no-stderr`: stderr is neither shown nor recorded.
 * `-s`/`--run-in-shell`: `Process.start(runInShell: true)`, needed for
   `.bat`/`.cmd` files on Windows and shell built-ins. Arguments stay quoted:
@@ -119,7 +120,8 @@ cat cmd_record.log
   `StreamSink<List<int>>` usable as the `stdout:`/`stderr:` of any
   `runCmd`: `stream` yields the `HistoryItem`s, `ioSink` (nullable) gets a
   copy of the bytes, `close()` flushes the last line.
-* `dump(history)` prints the header and the stdin items only.
+* `dump(history)` prints the header and every item in time order
+  (`historyDumpLines(history)` returns those lines).
   `durationToString(Duration)` is the `mm:ss.mmm` formatter (`01:01.090`,
   minutes wrap at 60).
 * Tests that spawn a process are VM only (`@TestOn('vm')`); use

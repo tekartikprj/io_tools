@@ -5,9 +5,9 @@ description: >-
   the shell with tekartik_cmd_tools: killAllCommandsByName(name),
   killCommand(name), the kill_cmd command (dart run tekartik_cmd_tools:kill_cmd
   chrome), and the internal ps output parser (PsParser, PsLine, PsHeader,
-  findByCmd, findFirstByCmd, getProcessIds/killProcess on Windows). Covers the
-  linux/macos `ps x -o pid,cmd` + `kill -9` path and the Windows tasklist /
-  taskkill path.
+  findByCmd, findFirstByCmd, selfAndParentPids, getProcessIds/killProcess on
+  Windows). Covers the linux `ps x -o pid,ppid,cmd` + `kill -9` path and the
+  Windows tasklist / taskkill path.
 ---
 
 # kill_cmd: kill processes by name (tekartik_cmd_tools)
@@ -19,8 +19,8 @@ between test or CI runs.
 
 ## Guidelines
 
-* Dependency (git, private project repo, not on pub.dev); it is usually a
-  tooling/test dependency:
+* Dependency (git, not on pub.dev); it is usually a tooling/test
+  dependency:
   ```yaml
   dev_dependencies:
     tekartik_cmd_tools:
@@ -37,9 +37,12 @@ between test or CI runs.
     `killAllCommandsByName`, whose count you can assert on.
   Everything is `dart:io` based: VM only, no web, no Flutter web.
 * Matching rules differ per platform, and this is the main pitfall:
-  * linux/macos: runs `ps x -o pid,cmd`, keeps the lines whose **full command
-    line contains** `name` (a plain `String.contains`, no glob, no regexp),
-    prints them, then runs `kill -9 <pid>` on each. So `dart` also matches
+  * linux (and macOS, to be checked: BSD `ps` may not know the `cmd`
+    keyword): runs `ps x -o pid,ppid,cmd` (the processes of the current
+    user), keeps the lines whose **full command line contains** `name` (a
+    plain `String.contains`, arguments included: `qemu` also matches
+    `less qemu.log`), leaves out the current process and its parents, prints
+    the others, then runs `kill -9 <pid>` on each. So `dart` also matches
     `/usr/lib/dart/bin/dart --your-analysis-server`: pass something specific
     (`qemu-system-i386`, `chrome --type=renderer`, an absolute path fragment).
   * Windows: runs `tasklist /FO CSV` and keeps the rows whose `Image Name` is
@@ -50,11 +53,13 @@ between test or CI runs.
 * The calls shell out with `process_run`'s `runCmd(ProcessCmd(...))` with
   verbose on, so the `ps`/`kill` commands and the matched lines are written to
   stdout. There is no quiet mode and no dry-run: to preview what would be
-  killed, run `ps x -o pid,cmd` yourself and filter with `PsParser` before
+  killed, run `ps x -o pid,ppid,cmd` yourself and filter with `PsParser` before
   calling the kill function.
 * `kill -9` / `taskkill /F` is an unconditional kill: no signal handler, no
-  graceful shutdown, unsaved state is lost. Never call it on a name that can
-  match the current process or the test runner itself.
+  graceful shutdown, unsaved state is lost. An empty or blank name throws an
+  `ArgumentError` (it would match every process; the command refuses it with
+  its usage). On Windows the current process is not left out: never pass a
+  name that can match it (`dart.exe`).
 * Command line (the package declares no `executables:`, so use `dart run`, not
   `dart pub global activate`): `dart run tekartik_cmd_tools:kill_cmd <part> [...]`
   from a package that depends on it, or `dart run bin/kill_cmd.dart <part>` from
@@ -70,8 +75,9 @@ between test or CI runs.
   `killProcess(pid)`. They work (the package's own tests use them) but are not
   part of the public API: importing them from another package needs
   `// ignore: implementation_imports` and may break without notice.
-  `PsParser` assumes the first line is the header and reads the `PID` and `CMD`
-  columns, i.e. exactly the `ps x -o pid,cmd` output; `PsLine.pid` throws a
+  `PsParser` assumes the first line is the header and reads the `PID`, `PPID`
+  and `CMD` columns (`CMD` last: the whole rest of the line), i.e. the
+  `ps x -o pid,ppid,cmd` output; `PsLine.pid` throws a
   `FormatException` on a line whose first column is not an int.
 * Tests: `@TestOn('vm')`, and guard anything that really kills a process behind
   a name you own. The Windows-only test in this package is skipped with
@@ -155,7 +161,7 @@ Future<void> main() async {
     stdout.writeln('ps parsing is for linux/macos only');
     return;
   }
-  var result = await runCmd(ProcessCmd('ps', ['x', '-o', 'pid,cmd']));
+  var result = await runCmd(ProcessCmd('ps', ['x', '-o', 'pid,ppid,cmd']));
   var parser = PsParser(result.stdout.toString());
   for (var line in parser.findByCmd('chrome')) {
     stdout.writeln('would kill ${line.pid}: ${line.cmd}');

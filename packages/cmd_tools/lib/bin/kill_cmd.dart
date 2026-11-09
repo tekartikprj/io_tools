@@ -36,7 +36,8 @@ Future main(List<String> args) async {
     return;
   }
 
-  if (results.rest.isEmpty) {
+  // An empty name would match (and kill) every process.
+  if (results.rest.isEmpty || results.rest.any((name) => name.trim().isEmpty)) {
     printUsage();
     exit(1);
   }

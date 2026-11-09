@@ -131,18 +131,21 @@ Future main(List<String> arguments) async {
   if (ownStdin!) {
     inStreamController = StreamController<List<int>>(sync: true);
     inStream = inStreamController.stream;
-    stdin.transform(utf8.decoder).transform(const LineSplitter()).listen((
-      String line,
-    ) {
-      inStreamController.add(utf8.encode('$line\n'));
-    });
+    stdin.transform(utf8.decoder).transform(const LineSplitter()).listen(
+      (String line) {
+        inStreamController.add(utf8.encode('$line\n'));
+      },
+      // The command sees the end of its input.
+      onDone: () => inStreamController.close(),
+    );
   }
 
   await record(
     cmdExecutable,
     cmdArguments,
     runInShell: runInShell,
-    recordStdin: recordStdin,
+    // -w forwards (and records) the lines read.
+    recordStdin: recordStdin! || ownStdin,
     history: history,
     dumpSink: ioSink,
     noStderr: noStdErr,
