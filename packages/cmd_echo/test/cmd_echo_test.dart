@@ -24,6 +24,8 @@ void main() {
       SystemEncoding? stderrEncoding = systemEncoding,
       StreamSink<List<int>>? stdout,
     }) async {
+      // dart:io Process.run on purpose: the reference the process_run
+      // result is compared with.
       var result = await Process.run(
         executable,
         arguments,
